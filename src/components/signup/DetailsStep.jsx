@@ -1,208 +1,153 @@
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 const locations = {
-  Tripura: [
-    'Agartala',
-    'Udaipur',
-    'Dharmanagar',
-    'Kailasahar',
-  ],
-
-  Assam: [
-    'Guwahati',
-    'Silchar',
-    'Dibrugarh',
-    'Jorhat',
-  ],
-
-  Meghalaya: [
-    'Shillong',
-    'Tura',
-    'Cherrapunji',
-    'Jowai',
-  ],
-
-  WestBengal: [
-    'Kolkata',
-    'Siliguri',
-    'Durgapur',
-    'Howrah',
-  ],
+  Tripura: ['Agartala', 'Udaipur', 'Dharmanagar'],
+  Assam: ['Guwahati', 'Dibrugarh', 'Silchar', 'Jorhat'],
+  Meghalaya: ['Shillong', 'Tura', 'Cherrapunji'],
+  WestBengal: ['Kolkata', 'Siliguri', 'Durgapur', 'Howrah'],
 }
 
 function DetailsStep({ initialData, onBack, onSubmit }) {
-  const [phone, setPhone] = useState(
-    initialData?.phone || ''
-  )
-
-  const [state, setState] = useState(
-    initialData?.state || ''
-  )
-
-  const [city, setCity] = useState(
-    initialData?.city || ''
-  )
+  const [phone, setPhone] = useState(initialData?.phone || '')
+  const [state, setState] = useState(initialData?.state || '')
+  const [city, setCity] = useState(initialData?.city || '')
 
   const [errors, setErrors] = useState({})
-
   const [loading, setLoading] = useState(false)
 
+  const availableCities = useMemo(() => {
+    return state ? locations[state] || [] : []
+  }, [state])
 
-  /* =========================================================
-     AVAILABLE CITIES
-  ========================================================= */
+  /*
+   * ---------------------------------------------------------
+   * VALIDATION
+   * ---------------------------------------------------------
+   */
 
-  const availableCities = state
-    ? locations[state] || []
-    : []
+  const validatePhone = (value) => {
+    if (!value.trim()) {
+      return 'Phone number is required.'
+    }
 
+    if (!/^\d+$/.test(value)) {
+      return 'Phone number must contain numbers only.'
+    }
 
-  /* =========================================================
-     VALIDATION
-  ========================================================= */
+    if (value.length !== 10) {
+      return 'Phone number must be exactly 10 digits.'
+    }
+
+    return ''
+  }
 
   const validate = () => {
     const newErrors = {}
 
+    const phoneError = validatePhone(phone)
 
-    /* Phone */
-
-    if (!phone.trim()) {
-
-      newErrors.phone =
-        'Please enter your phone number.'
-
-    } else if (!/^\d+$/.test(phone)) {
-
-      newErrors.phone =
-        'Phone number must contain numbers only.'
-
-    } else if (phone.length !== 10) {
-
-      newErrors.phone =
-        'Phone number must be 10 digits.'
-
+    if (phoneError) {
+      newErrors.phone = phoneError
     }
-
-
-    /* State */
 
     if (!state) {
-
-      newErrors.state =
-        'Please select your state.'
-
+      newErrors.state = 'Please select your state.'
     }
-
-
-    /* City */
 
     if (!city) {
-
-      newErrors.city =
-        'Please select your city.'
-
+      newErrors.city = 'Please select your city.'
     }
-
 
     setErrors(newErrors)
 
     return Object.keys(newErrors).length === 0
   }
 
-
-  /* =========================================================
-     CLEAR ERROR
-  ========================================================= */
-
-  const clearError = (field) => {
-
-    if (!errors[field]) {
-      return
-    }
-
-    setErrors((previous) => ({
-      ...previous,
-      [field]: '',
-    }))
-
-  }
-
-
-  /* =========================================================
-     PHONE CHANGE
-  ========================================================= */
+  /*
+   * ---------------------------------------------------------
+   * PHONE
+   * ---------------------------------------------------------
+   */
 
   const handlePhoneChange = (event) => {
-
     const value = event.target.value
-
-    // Numbers only
-
-    if (!/^\d*$/.test(value)) {
-      return
-    }
-
-    // Maximum 10 digits
-
-    if (value.length > 10) {
-      return
-    }
+      .replace(/\D/g, '')
+      .slice(0, 10)
 
     setPhone(value)
 
-    clearError('phone')
-
+    if (errors.phone) {
+      setErrors((previous) => ({
+        ...previous,
+        phone: validatePhone(value),
+      }))
+    }
   }
 
-
-  /* =========================================================
-     STATE CHANGE
-  ========================================================= */
+  /*
+   * ---------------------------------------------------------
+   * STATE
+   * ---------------------------------------------------------
+   */
 
   const handleStateChange = (event) => {
-
     const value = event.target.value
 
     setState(value)
 
-    /*
-     * Reset city whenever state changes.
-     *
-     * This demonstrates the cross-field dependency
-     * required by the assessment.
-     */
-
+    // City depends on state, so reset it whenever state changes.
     setCity('')
 
-    clearError('state')
-    clearError('city')
-
+    setErrors((previous) => ({
+      ...previous,
+      state: '',
+      city: '',
+    }))
   }
 
+  /*
+   * ---------------------------------------------------------
+   * CITY
+   * ---------------------------------------------------------
+   */
 
-  /* =========================================================
-     SUBMIT
-  ========================================================= */
+  const handleCityChange = (event) => {
+    const value = event.target.value
+
+    setCity(value)
+
+    if (errors.city) {
+      setErrors((previous) => ({
+        ...previous,
+        city: '',
+      }))
+    }
+  }
+
+  /*
+   * ---------------------------------------------------------
+   * SUBMIT
+   * ---------------------------------------------------------
+   */
 
   const handleSubmit = async (event) => {
-
     event.preventDefault()
 
-    if (!validate()) {
+    if (loading) {
+      return
+    }
+
+    const isValid = validate()
+
+    if (!isValid) {
       return
     }
 
     setLoading(true)
 
-    /*
-     * Simulate frontend submission.
-     *
-     * The assessment is frontend-only.
-     */
-
+    // Simulate saving the final signup details.
     await new Promise((resolve) => {
-      setTimeout(resolve, 1500)
+      setTimeout(resolve, 1000)
     })
 
     setLoading(false)
@@ -212,352 +157,283 @@ function DetailsStep({ initialData, onBack, onSubmit }) {
       state,
       city,
     })
-
   }
 
+  /*
+   * ---------------------------------------------------------
+   * RESTORE DATA WHEN GOING BACK
+   * ---------------------------------------------------------
+   */
+
+  useEffect(() => {
+    setPhone(initialData?.phone || '')
+    setState(initialData?.state || '')
+    setCity(initialData?.city || '')
+  }, [initialData])
 
   return (
-    <main className="min-h-screen bg-[#08070c] px-6 py-8 text-white">
+    <main className="min-h-screen bg-[#08070c] px-4 py-5 text-white sm:px-6 sm:py-8">
+      <div className="mx-auto flex min-h-[calc(100vh-2.5rem)] w-full max-w-xl flex-col sm:min-h-[calc(100vh-4rem)]">
 
-      <div className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-xl flex-col">
-
-
-        {/* =================================================
+        {/* ---------------------------------------------------
             HEADER
-        ================================================= */}
+        --------------------------------------------------- */}
 
         <div className="flex items-center justify-between">
-
           <button
             type="button"
             onClick={onBack}
             disabled={loading}
-            className="text-sm text-white/50 transition hover:text-white disabled:opacity-40"
+            className="rounded-lg py-2 text-sm text-white/50 transition hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
           >
             ← Back
           </button>
 
-
-          <span className="text-xs font-medium tracking-widest text-white/40">
+          <span className="text-[11px] font-medium tracking-[0.2em] text-white/40 sm:text-xs sm:tracking-widest">
             04 / 04
           </span>
-
         </div>
 
-
-        {/* =================================================
+        {/* ---------------------------------------------------
             PROGRESS
-        ================================================= */}
+        --------------------------------------------------- */}
 
-        <div className="mt-8 h-1 overflow-hidden rounded-full bg-white/10">
-
-          <div className="h-full w-full rounded-full bg-purple-400" />
-
+        <div
+          className="mt-5 h-1 overflow-hidden rounded-full bg-white/10 sm:mt-8"
+          aria-label="Signup progress: step 4 of 4"
+        >
+          <div className="h-full w-full rounded-full bg-purple-400 transition-all duration-500" />
         </div>
 
-
-        {/* =================================================
+        {/* ---------------------------------------------------
             CONTENT
-        ================================================= */}
+        --------------------------------------------------- */}
 
-        <div className="flex flex-1 flex-col justify-center py-12">
+        <div className="flex flex-1 flex-col justify-center py-10 sm:py-16">
 
+          <div>
+            <p className="text-sm font-medium text-purple-400">
+              Almost finished
+            </p>
 
-          <p className="text-sm font-medium text-purple-400">
-            One last thing
-          </p>
+            <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:mt-3 sm:text-4xl lg:text-5xl">
+              A few more details.
+            </h1>
 
+            <p className="mt-3 max-w-md text-sm leading-6 text-white/50 sm:mt-4 sm:text-base">
+              Add your contact and location details to complete your profile.
+            </p>
+          </div>
 
-          <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">
-            Where are you based?
-          </h1>
-
-
-          <p className="mt-4 max-w-md text-sm leading-6 text-white/50 sm:text-base">
-            Add your location and contact information to
-            complete your profile.
-          </p>
-
-
-          {/* =================================================
+          {/* -------------------------------------------------
               FORM
-          ================================================= */}
+          ------------------------------------------------- */}
 
           <form
             onSubmit={handleSubmit}
-            className="mt-10 space-y-6"
+            noValidate
+            className="mt-8 space-y-5 sm:mt-10 sm:space-y-6"
           >
 
-
-            {/* =================================================
-                PHONE
-            ================================================= */}
+            {/* PHONE */}
 
             <div>
-
               <label
-                htmlFor="phone"
+                htmlFor="details-phone"
                 className="mb-2 block text-sm font-medium text-white/80"
               >
                 Phone number
               </label>
 
+              <div className="flex overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] transition focus-within:border-purple-400">
+                <div className="flex shrink-0 items-center border-r border-white/10 px-3 text-sm text-white/50 sm:px-4">
+                  +91
+                </div>
 
-              <input
-                id="phone"
-                type="tel"
-                inputMode="numeric"
-                value={phone}
-                maxLength={10}
-                placeholder="10-digit phone number"
-                autoComplete="tel"
-                disabled={loading}
-                onChange={handlePhoneChange}
-                className={`w-full rounded-2xl border bg-white/[0.04] px-5 py-4 text-white outline-none transition placeholder:text-white/25 ${
-                  errors.phone
-                    ? 'border-red-400/70'
-                    : 'border-white/10 focus:border-purple-400'
-                }`}
-              />
-
-
-              {/* Phone counter */}
-
-              <div className="mt-2 flex justify-between">
-
-                {errors.phone ? (
-
-                  <p className="text-sm text-red-400">
-                    {errors.phone}
-                  </p>
-
-                ) : (
-
-                  <p className="text-xs text-white/30">
-                    Enter your 10-digit phone number.
-                  </p>
-
-                )}
-
-                <span className="text-xs text-white/30">
-                  {phone.length}/10
-                </span>
-
+                <input
+                  id="details-phone"
+                  type="tel"
+                  inputMode="numeric"
+                  value={phone}
+                  onChange={handlePhoneChange}
+                  onBlur={() => {
+                    setErrors((previous) => ({
+                      ...previous,
+                      phone: validatePhone(phone),
+                    }))
+                  }}
+                  placeholder="Enter 10-digit number"
+                  autoComplete="tel"
+                  maxLength={10}
+                  disabled={loading}
+                  className="min-w-0 flex-1 bg-transparent px-3 py-3.5 text-sm text-white outline-none placeholder:text-white/25 sm:px-5 sm:py-4 sm:text-base"
+                />
               </div>
 
+              <div className="mt-2 flex items-start justify-between gap-3">
+                <div className="min-h-[20px]">
+                  {errors.phone && (
+                    <p className="text-xs leading-5 text-red-400 sm:text-sm">
+                      {errors.phone}
+                    </p>
+                  )}
+                </div>
+
+                <span className="shrink-0 text-[11px] text-white/25">
+                  {phone.length}/10
+                </span>
+              </div>
             </div>
 
-
-            {/* =================================================
-                STATE
-            ================================================= */}
+            {/* STATE */}
 
             <div>
-
               <label
-                htmlFor="state"
+                htmlFor="details-state"
                 className="mb-2 block text-sm font-medium text-white/80"
               >
                 State
               </label>
 
+              <select
+                id="details-state"
+                value={state}
+                onChange={handleStateChange}
+                onBlur={() => {
+                  setErrors((previous) => ({
+                    ...previous,
+                    state: state ? '' : 'Please select your state.',
+                  }))
+                }}
+                disabled={loading}
+                className={`w-full appearance-none rounded-2xl border bg-white/[0.04] px-4 py-3.5 text-sm outline-none transition sm:px-5 sm:py-4 sm:text-base ${
+                  state ? 'text-white' : 'text-white/25'
+                } ${
+                  errors.state
+                    ? 'border-red-400/70 focus:border-red-400'
+                    : 'border-white/10 focus:border-purple-400'
+                }`}
+              >
+                <option value="" disabled className="bg-[#121018]">
+                  Select your state
+                </option>
 
-              <div className="relative">
+                <option value="Tripura" className="bg-[#121018]">
+                  Tripura
+                </option>
 
-                <select
-                  id="state"
-                  value={state}
-                  disabled={loading}
-                  onChange={handleStateChange}
-                  className={`w-full appearance-none rounded-2xl border bg-[#111016] px-5 py-4 text-white outline-none transition ${
-                    errors.state
-                      ? 'border-red-400/70'
-                      : 'border-white/10 focus:border-purple-400'
-                  }`}
-                >
+                <option value="Assam" className="bg-[#121018]">
+                  Assam
+                </option>
 
-                  <option
-                    value=""
-                    disabled
-                    className="bg-[#111016]"
-                  >
-                    Select your state
-                  </option>
+                <option value="Meghalaya" className="bg-[#121018]">
+                  Meghalaya
+                </option>
 
+                <option value="WestBengal" className="bg-[#121018]">
+                  West Bengal
+                </option>
+              </select>
 
-                  <option
-                    value="Tripura"
-                    className="bg-[#111016]"
-                  >
-                    Tripura
-                  </option>
-
-
-                  <option
-                    value="Assam"
-                    className="bg-[#111016]"
-                  >
-                    Assam
-                  </option>
-
-
-                  <option
-                    value="Meghalaya"
-                    className="bg-[#111016]"
-                  >
-                    Meghalaya
-                  </option>
-
-
-                  <option
-                    value="WestBengal"
-                    className="bg-[#111016]"
-                  >
-                    West Bengal
-                  </option>
-
-                </select>
-
-
-                <span className="pointer-events-none absolute right-5 top-1/2 -translate-y-1/2 text-white/40">
-                  ↓
-                </span>
-
+              <div className="min-h-[20px]">
+                {errors.state && (
+                  <p className="mt-2 text-xs leading-5 text-red-400 sm:text-sm">
+                    {errors.state}
+                  </p>
+                )}
               </div>
-
-
-              {errors.state && (
-
-                <p className="mt-2 text-sm text-red-400">
-                  {errors.state}
-                </p>
-
-              )}
-
             </div>
 
-
-            {/* =================================================
-                CITY
-            ================================================= */}
+            {/* CITY */}
 
             <div>
-
               <label
-                htmlFor="city"
+                htmlFor="details-city"
                 className="mb-2 block text-sm font-medium text-white/80"
               >
                 City
               </label>
 
+              <select
+                id="details-city"
+                value={city}
+                onChange={handleCityChange}
+                onBlur={() => {
+                  setErrors((previous) => ({
+                    ...previous,
+                    city: city ? '' : 'Please select your city.',
+                  }))
+                }}
+                disabled={!state || loading}
+                className={`w-full appearance-none rounded-2xl border bg-white/[0.04] px-4 py-3.5 text-sm outline-none transition sm:px-5 sm:py-4 sm:text-base ${
+                  city ? 'text-white' : 'text-white/25'
+                } ${
+                  errors.city
+                    ? 'border-red-400/70 focus:border-red-400'
+                    : 'border-white/10 focus:border-purple-400'
+                } ${
+                  !state
+                    ? 'cursor-not-allowed opacity-50'
+                    : ''
+                }`}
+              >
+                <option value="" disabled className="bg-[#121018]">
+                  {state ? 'Select your city' : 'Select a state first'}
+                </option>
 
-              <div className="relative">
-
-                <select
-                  id="city"
-                  value={city}
-                  disabled={!state || loading}
-                  onChange={(event) => {
-
-                    setCity(event.target.value)
-
-                    clearError('city')
-
-                  }}
-                  className={`w-full appearance-none rounded-2xl border bg-[#111016] px-5 py-4 text-white outline-none transition disabled:cursor-not-allowed disabled:opacity-40 ${
-                    errors.city
-                      ? 'border-red-400/70'
-                      : 'border-white/10 focus:border-purple-400'
-                  }`}
-                >
-
+                {availableCities.map((cityName) => (
                   <option
-                    value=""
-                    disabled
-                    className="bg-[#111016]"
+                    key={cityName}
+                    value={cityName}
+                    className="bg-[#121018]"
                   >
-                    {state
-                      ? 'Select your city'
-                      : 'Select state first'}
+                    {cityName}
                   </option>
+                ))}
+              </select>
 
-
-                  {availableCities.map((cityName) => (
-
-                    <option
-                      key={cityName}
-                      value={cityName}
-                      className="bg-[#111016]"
-                    >
-                      {cityName}
-                    </option>
-
-                  ))}
-
-                </select>
-
-
-                <span className="pointer-events-none absolute right-5 top-1/2 -translate-y-1/2 text-white/40">
-                  ↓
-                </span>
-
+              <div className="min-h-[20px]">
+                {errors.city ? (
+                  <p className="mt-2 text-xs leading-5 text-red-400 sm:text-sm">
+                    {errors.city}
+                  </p>
+                ) : (
+                  <p className="mt-2 text-xs leading-5 text-white/30">
+                    {state
+                      ? `${availableCities.length} cities available`
+                      : 'Choose your state to see available cities.'}
+                  </p>
+                )}
               </div>
-
-
-              {errors.city && (
-
-                <p className="mt-2 text-sm text-red-400">
-                  {errors.city}
-                </p>
-
-              )}
-
             </div>
 
-
-            {/* =================================================
-                SUBMIT
-            ================================================= */}
+            {/* COMPLETE BUTTON */}
 
             <button
               type="submit"
               disabled={loading}
-              className="flex w-full items-center justify-center gap-3 rounded-2xl bg-white py-4 text-sm font-semibold text-black transition hover:bg-white/90 disabled:cursor-not-allowed disabled:opacity-50"
+              className="flex w-full items-center justify-center gap-3 rounded-2xl bg-white py-3.5 text-sm font-semibold text-black transition hover:bg-white/90 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50 sm:py-4"
             >
-
               {loading ? (
-
                 <>
-
                   <span className="h-4 w-4 animate-spin rounded-full border-2 border-black/20 border-t-black" />
-
-                  Completing profile...
-
+                  Completing signup...
                 </>
-
               ) : (
-
                 'Complete signup'
-
               )}
-
             </button>
-
           </form>
-
         </div>
 
-
-        {/* =================================================
+        {/* ---------------------------------------------------
             FOOTER
-        ================================================= */}
+        --------------------------------------------------- */}
 
-        <p className="pb-4 text-center text-xs leading-5 text-white/30">
-          You can update your profile information later.
+        <p className="pb-2 text-center text-[11px] leading-5 text-white/30 sm:pb-4 sm:text-xs">
+          Your information is used to set up your Extroverts profile.
         </p>
-
       </div>
-
     </main>
   )
 }

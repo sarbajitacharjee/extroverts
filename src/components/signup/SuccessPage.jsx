@@ -74,7 +74,7 @@ function SuccessPage({ email, profile, details }) {
             {/* EMAIL */}
 
             <div className="border-b border-white/5 px-5 py-4 sm:px-6 sm:py-5">
-              <p className="text-xs text-white/40 sm:text-sm">
+              <p className="text-xs text-purple-400 sm:text-sm">
                 Email
               </p>
 
@@ -86,7 +86,7 @@ function SuccessPage({ email, profile, details }) {
             {/* NAME */}
 
             <div className="border-b border-white/5 px-5 py-4 sm:flex sm:items-center sm:justify-between sm:gap-4 sm:px-6 sm:py-5">
-              <p className="text-xs text-white/40 sm:text-sm">
+              <p className="text-xs text-purple-400 sm:text-sm">
                 Name
               </p>
 
@@ -98,7 +98,7 @@ function SuccessPage({ email, profile, details }) {
             {/* AGE */}
 
             <div className="border-b border-white/5 px-5 py-4 sm:flex sm:items-center sm:justify-between sm:gap-4 sm:px-6 sm:py-5">
-              <p className="text-xs text-white/40 sm:text-sm">
+              <p className="text-xs text-purple-400 sm:text-sm">
                 Age
               </p>
 
@@ -110,7 +110,7 @@ function SuccessPage({ email, profile, details }) {
             {/* PRONOUNS */}
 
             <div className="border-b border-white/5 px-5 py-4 sm:flex sm:items-center sm:justify-between sm:gap-4 sm:px-6 sm:py-5">
-              <p className="text-xs text-white/40 sm:text-sm">
+              <p className="text-xs  text-purple-400 sm:text-sm">
                 Pronouns
               </p>
 
@@ -122,7 +122,7 @@ function SuccessPage({ email, profile, details }) {
             {/* LOCATION */}
 
             <div className="px-5 py-4 sm:flex sm:items-center sm:justify-between sm:gap-4 sm:px-6 sm:py-5">
-              <p className="text-xs text-white/40 sm:text-sm">
+              <p className="text-xs  text-purple-400 sm:text-sm">
                 Location
               </p>
 

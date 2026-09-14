@@ -48,11 +48,11 @@ function LandingPage({ onGetStarted }) {
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-5 sm:px-6 sm:py-6 lg:px-10">
 
           <div className="flex items-center gap-2.5 sm:gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white text-base font-bold text-black sm:h-10 sm:w-10 sm:text-lg">
+            {/* <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white text-base font-bold text-black sm:h-10 sm:w-10 sm:text-lg">
               E
-            </div>
+            </div> */}
 
-            <span className="text-base font-semibold tracking-tight sm:text-lg">
+            <span className="text-2xl recoleta font-semibold tracking-tight sm:text-3xl">
               Extroverts
             </span>
           </div>
@@ -81,7 +81,7 @@ function LandingPage({ onGetStarted }) {
               Meet. Hangout. Vibe.
             </div>
 
-            <h1 className="text-4xl font-semibold leading-[1.05] tracking-tight sm:text-6xl lg:text-7xl">
+            <h1 className="text-5xl recoleta font-semibold leading-[1.05] tracking-tight sm:text-6xl lg:text-7xl">
               Your people are
 
               <span className="block text-purple-400">
@@ -100,7 +100,7 @@ function LandingPage({ onGetStarted }) {
               <button
                 type="button"
                 onClick={onGetStarted}
-                className="w-full rounded-full bg-white px-7 py-3.5 text-sm font-semibold text-black transition hover:scale-[1.02] hover:bg-white/90 sm:w-auto"
+                className="w-full rounded-full recoleta bg-white px-7 py-3.5 text-4xl font-semibold text-black transition hover:scale-[1.02] hover:bg-white/90 sm:w-auto"
               >
                 Get started
               </button>
@@ -141,7 +141,7 @@ function LandingPage({ onGetStarted }) {
                     Find your vibe
                   </p>
 
-                  <h2 className="mt-2 text-3xl font-semibold leading-tight">
+                  <h2 className="mt-2 recoleta text-5xl font-semibold leading-tight">
                     Make plans.
                     <br />
                     Meet people.
@@ -167,7 +167,7 @@ function LandingPage({ onGetStarted }) {
                   </p>
 
                   <div className="mt-2 flex items-center justify-between">
-                    <span className="text-sm font-medium">
+                    <span className="text-base recoleta font-medium">
                       Weekend Hangout
                     </span>
 
@@ -205,7 +205,7 @@ function TermsPage({ onBack, onContinue }) {
           ← Back
         </button>
 
-        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+        <h1 className="text-4xl recoleta font-semibold tracking-tight sm:text-6xl">
           Terms & Conditions
         </h1>
 
@@ -618,7 +618,7 @@ function SignupPage({ onBack }) {
               Let's get started
             </p>
 
-            <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:mt-3 sm:text-5xl">
+            <h1 className="mt-2 text-4xl recoleta font-semibold tracking-tight sm:mt-3 sm:text-6xl">
               What's your email?
             </h1>
 
@@ -748,7 +748,7 @@ function SignupPage({ onBack }) {
               Almost there
             </p>
 
-            <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:mt-3 sm:text-5xl">
+            <h1 className="mt-2 text-4xl recoleta font-semibold tracking-tight sm:mt-3 sm:text-6xl">
               Verify your email
             </h1>
 

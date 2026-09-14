@@ -48,7 +48,7 @@ function SuccessPage({ email, profile, details }) {
             Welcome to Extroverts
           </p>
 
-          <h1 className="mt-2 text-center text-3xl font-semibold tracking-tight sm:text-4xl lg:text-5xl">
+          <h1 className="mt-2 text-center recoleta text-4xl font-semibold tracking-tight sm:text-5xl lg:text-6xl">
             You're all set!
           </h1>
 

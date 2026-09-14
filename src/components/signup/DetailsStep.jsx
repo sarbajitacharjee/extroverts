@@ -217,7 +217,7 @@ function DetailsStep({ initialData, onBack, onSubmit }) {
               Almost finished
             </p>
 
-            <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:mt-3 sm:text-4xl lg:text-5xl">
+            <h1 className="mt-2 recoleta text-4xl font-semibold tracking-tight sm:mt-3 sm:text-5xl lg:text-6xl">
               A few more details.
             </h1>
 

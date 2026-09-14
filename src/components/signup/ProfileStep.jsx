@@ -234,7 +234,7 @@ function ProfileStep({ onBack, onContinue, initialData }) {
               Tell us about yourself
             </p>
 
-            <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:mt-3 sm:text-4xl lg:text-5xl">
+            <h1 className="mt-2 text-4xl recoleta font-semibold tracking-tight sm:mt-3 sm:text-5xl lg:text-6xl">
               Build your profile.
             </h1>
 
